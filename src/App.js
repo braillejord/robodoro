@@ -1,5 +1,11 @@
 import React from "react";
+import { Section } from "./components/Section";
 import "./App.css";
+import { Timer } from "./components/Timer";
+import { TimerButtons } from "./components/TimerButtons";
+import { NavBar } from "./components/NavBar";
+import { TimerDetails } from "./components/TimerDetails";
+import { TasksContainer } from "./components/TasksContainer";
 
 export const App = () => {
   const [play, setPlay] = React.useState(false);
@@ -10,27 +16,19 @@ export const App = () => {
 
   const stages = React.useMemo(
     () => [
-      { label: "Focus Time", duration: initialFocusTime },
-      { label: "Short Break", duration: initialShortTime },
-      { label: "Focus Time", duration: initialFocusTime },
-      { label: "Short Break", duration: initialShortTime },
-      { label: "Focus Time", duration: initialFocusTime },
-      { label: "Short Break", duration: initialShortTime },
-      { label: "Focus Time", duration: initialFocusTime },
-      { label: "Long Break", duration: initialLongTime },
+      { number: 1, label: "Focus Time", duration: initialFocusTime },
+      { number: 2, label: "Short Break", duration: initialShortTime },
+      { number: 3, label: "Focus Time", duration: initialFocusTime },
+      { number: 4, label: "Short Break", duration: initialShortTime },
+      { number: 5, label: "Focus Time", duration: initialFocusTime },
+      { number: 6, label: "Short Break", duration: initialShortTime },
+      { number: 7, label: "Focus Time", duration: initialFocusTime },
+      { number: 8, label: "Long Break", duration: initialLongTime },
     ],
     [initialFocusTime, initialShortTime, initialLongTime]
   );
 
   const [time, setTime] = React.useState(stages[currentStage].duration);
-
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60)
-      .toString()
-      .padStart(2, "0");
-    const seconds = (time % 60).toString().padStart(2, "0");
-    return `${minutes}:${seconds}`;
-  };
 
   React.useEffect(() => {
     let timerId = null;
@@ -53,25 +51,30 @@ export const App = () => {
     };
   }, [time, play, currentStage, stages]);
 
-  const pauseTimer = () => {
-    setPlay(!play);
-  };
-
-  const restartTimer = () => {
-    setTime(stages[currentStage].duration);
-    setPlay(false);
-  };
-
   return (
-    <div className="pomo">
-      <div>{stages[currentStage].label}</div>
-      <div className="timer">
-        <span>{formatTime(time)}</span>
+    <>
+      <NavBar />
+      <Section>
+        <TimerDetails stages={stages} currentStage={currentStage} />
+        <Timer time={time} />
+        <div>Reward: Robot</div>
+        <TimerButtons
+          play={play}
+          setPlay={setPlay}
+          setTime={setTime}
+          stages={stages}
+          currentStage={currentStage}
+        />
+      </Section>
+
+      <div className="flex justify-center max-w-xl m-auto gap-2">
+        <Section>Animation</Section>
+        <Section>Robot</Section>
       </div>
-      <div>current stage: {currentStage}</div>
-      <div>current time: {time}</div>
-      <button onClick={pauseTimer}>{play ? "pause" : "start"}</button>
-      <button onClick={restartTimer}>restart</button>
-    </div>
+
+      <Section>
+        <TasksContainer />
+      </Section>
+    </>
   );
 };
