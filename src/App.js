@@ -6,29 +6,40 @@ import { TimerButtons } from "./components/TimerButtons";
 import { NavBar } from "./components/NavBar";
 import { TimerDetails } from "./components/TimerDetails";
 import { TasksContainer } from "./components/TasksContainer";
+import { AnimationContainer } from "./components/AnimationContainer";
+import { SettingsModal } from "./components/SettingsModal";
 
 export const App = () => {
   const [play, setPlay] = React.useState(false);
-  const [initialFocusTime, setInitialFocusTime] = React.useState(15);
-  const [initialShortTime, setInitialShortTime] = React.useState(3);
-  const [initialLongTime, setInitialLongTime] = React.useState(9);
+  const [focusTime, setFocusTime] = React.useState(15);
+  const [shortBreakTime, setShortBreakTime] = React.useState(3);
+  const [longBreakTime, setLongBreakTime] = React.useState(9);
   const [currentStage, setCurrentStage] = React.useState(0);
 
   const stages = React.useMemo(
     () => [
-      { number: 1, label: "Focus Time", duration: initialFocusTime },
-      { number: 2, label: "Short Break", duration: initialShortTime },
-      { number: 3, label: "Focus Time", duration: initialFocusTime },
-      { number: 4, label: "Short Break", duration: initialShortTime },
-      { number: 5, label: "Focus Time", duration: initialFocusTime },
-      { number: 6, label: "Short Break", duration: initialShortTime },
-      { number: 7, label: "Focus Time", duration: initialFocusTime },
-      { number: 8, label: "Long Break", duration: initialLongTime },
+      { number: 1, label: "Focus Time", duration: focusTime },
+      { number: 2, label: "Short Break", duration: shortBreakTime },
+      { number: 3, label: "Focus Time", duration: focusTime },
+      { number: 4, label: "Short Break", duration: shortBreakTime },
+      { number: 5, label: "Focus Time", duration: focusTime },
+      { number: 6, label: "Short Break", duration: shortBreakTime },
+      { number: 7, label: "Focus Time", duration: focusTime },
+      { number: 8, label: "Long Break", duration: longBreakTime },
     ],
-    [initialFocusTime, initialShortTime, initialLongTime]
+    [focusTime, shortBreakTime, longBreakTime]
   );
 
   const [time, setTime] = React.useState(stages[currentStage].duration);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = React.useState(false);
+
+  const toggleSettingsModal = () => {
+    setIsSettingsModalOpen(!isSettingsModalOpen);
+  };
+
+  React.useEffect(() => {
+    setTime(stages[currentStage].duration);
+  }, [stages, currentStage]);
 
   React.useEffect(() => {
     let timerId = null;
@@ -53,7 +64,19 @@ export const App = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar onSettingsClick={toggleSettingsModal} />
+      {isSettingsModalOpen && (
+        <SettingsModal
+          onClose={toggleSettingsModal}
+          focusTime={focusTime}
+          setFocusTime={setFocusTime}
+          shortBreakTime={shortBreakTime}
+          setShortBreakTime={setShortBreakTime}
+          longBreakTime={longBreakTime}
+          setLongBreakTime={setLongBreakTime}
+        />
+      )}
+
       <Section>
         <TimerDetails stages={stages} currentStage={currentStage} />
         <Timer time={time} />
@@ -67,10 +90,18 @@ export const App = () => {
         />
       </Section>
 
-      <div className="flex justify-center max-w-xl m-auto gap-2">
-        <Section>Animation</Section>
-        <Section>Robot</Section>
-      </div>
+      <Section>
+        <div className="flex">
+          <div className="flex items-center justify-center w-full m-2 bg-white rounded">
+            Words go here.
+          </div>
+          <img
+            className="m-auto w-1/4"
+            src="https://robohash.org/75.169.157.107.png"
+            alt="robot"
+          />
+        </div>
+      </Section>
 
       <Section>
         <TasksContainer />
