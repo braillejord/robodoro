@@ -1,5 +1,5 @@
-import { HomeIcon } from "../icons/HomeIcon";
-import { SettingsIcon } from "../icons/SettingsIcon";
+import { HomeIcon } from "../../icons/HomeIcon";
+import { SettingsIcon } from "../../icons/SettingsIcon";
 import { NavBarAvatar } from "./NavBarAvatar";
 
 export const NavBar = ({ onSettingsClick }) => {

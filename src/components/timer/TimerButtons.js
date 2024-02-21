@@ -1,6 +1,9 @@
-import { PlayIcon } from "../icons/PlayIcon";
-import { PauseIcon } from "../icons/PauseIcon";
-import { RestartIcon } from "../icons/RestartIcon";
+import { PlayIcon } from "../../icons/PlayIcon";
+import { PauseIcon } from "../../icons/PauseIcon";
+import { RestartIcon } from "../../icons/RestartIcon";
+import { CloseIcon } from "../../icons/CloseIcon";
+
+import { db } from "../../database/db";
 
 export const TimerButtons = ({
   play,
@@ -22,6 +25,12 @@ export const TimerButtons = ({
     setPlay(false);
   };
 
+  const resetTimer = async () => {
+    await db.timer.update(1, { stage: 0 });
+    setTime(stages[currentStage].duration);
+    setPlay(false);
+  };
+
   const Button = ({ children, onClick }) => {
     return (
       <button
@@ -38,6 +47,7 @@ export const TimerButtons = ({
       <Button onClick={playTimer}>{<PlayIcon />}</Button>
       <Button onClick={pauseTimer}>{<PauseIcon />}</Button>
       <Button onClick={restartTimer}>{<RestartIcon />}</Button>
+      <Button onClick={resetTimer}>{<CloseIcon />}</Button>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import Sophia from "../icons/Sophia.png";
+import Sophia from "../../icons/Sophia.png";
 
 export const NavBarAvatar = () => {
   return (

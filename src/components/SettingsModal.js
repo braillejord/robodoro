@@ -1,20 +1,48 @@
 import React from "react";
 import { CloseIcon } from "../icons/CloseIcon";
+import { db } from "../database/db";
 
 export const SettingsModal = ({
   onClose,
   focusTime,
-  setFocusTime,
   shortBreakTime,
-  setShortBreakTime,
   longBreakTime,
-  setLongBreakTime,
+  autostartFocus,
+  autostartBreaks,
 }) => {
+  const handleTimeChange = async (field, value) => {
+    await db.timer.update(1, { [field]: value });
+  };
+
   const timerSettings = [
-    { label: "Focus", value: focusTime, setter: setFocusTime },
-    { label: "Short Break", value: shortBreakTime, setter: setShortBreakTime },
-    { label: "Long Break", value: longBreakTime, setter: setLongBreakTime },
+    {
+      label: "Focus",
+      field: "focusTime",
+      value: focusTime,
+    },
+    {
+      label: "Short Break",
+      field: "shortBreakTime",
+      value: shortBreakTime,
+    },
+    {
+      label: "Long Break",
+      field: "longBreakTime",
+      value: longBreakTime,
+    },
   ];
+
+  const handleAutostart = async (field, value) => {
+    await db.timer.update(1, { [field]: value });
+  };
+
+  const handleDefaultTimes = async () => {
+    await db.timer.update(1, {
+      focusTime: 15,
+      shortBreakTime: 3,
+      longBreakTime: 9,
+    });
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -38,22 +66,37 @@ export const SettingsModal = ({
                 min="0"
                 step="1"
                 value={setting.value}
-                onChange={(e) => setting.setter(e.target.value)}
+                onChange={(e) =>
+                  handleTimeChange(setting.field, e.target.value)
+                }
               />
             </div>
           ))}
+          <button onClick={handleDefaultTimes}>Reset to default</button>
         </div>
+
+        <hr />
 
         {/* Autostart Settings */}
         <p>Autostart Settings</p>
         <div>
           <label>Autostart Focus Time</label>
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={autostartFocus}
+            onChange={(e) =>
+              handleAutostart("autostartFocus", e.target.checked)
+            }
+          />
         </div>
 
         <div></div>
         <label>Autostart Break Time</label>
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          checked={autostartBreaks}
+          onChange={(e) => handleAutostart("autostartBreaks", e.target.checked)}
+        />
       </div>
     </div>
   );
