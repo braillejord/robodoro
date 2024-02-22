@@ -16,11 +16,10 @@ export const Task = ({
 
   return (
     <div className="group flex justify-between items-center p-2 m-2 bg-white rounded cursor-pointer">
-      <div
-        className={`text-left ${completed ? "line-through" : ""}`}
-        onClick={toggleComplete}
-      >
-        {description}
+      <div className="flex-grow" onClick={toggleComplete}>
+        <div className={`text-left ${completed ? "line-through" : ""}`}>
+          {description}
+        </div>
       </div>
       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button onClick={() => handleEditTask(id)}>

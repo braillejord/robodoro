@@ -5,6 +5,7 @@ import { NewTask } from "./NewTask";
 import { db } from "../../database/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { EyeIcon } from "../../icons/EyeIcon";
+import { TrashIcon } from "../../icons/TrashIcon";
 
 export const TasksContainer = () => {
   const [addingNew, setAddingNew] = React.useState(false);
@@ -76,11 +77,29 @@ export const TasksContainer = () => {
     }
   };
 
+  const handleClearCompleted = async () => {
+    try {
+      await db.tasks.filter((task) => task.completed === true).delete();
+    } catch (error) {
+      console.error("Error clearing completed tasks", error);
+    }
+  };
+
+  const handleClearAll = async () => {
+    try {
+      await db.tasks.clear();
+    } catch (error) {
+      console.error("Error clearing all tasks", error);
+    }
+  };
+
   return (
     <>
       <TasksNav
         setAddingNew={setAddingNew}
         handleCompletedTasks={handleCompletedTasks}
+        handleClearCompleted={handleClearCompleted}
+        handleClearAll={handleClearAll}
       />
       {sortedTasks &&
         renderTasks(
@@ -99,11 +118,17 @@ export const TasksContainer = () => {
   );
 };
 
-const TasksNav = ({ setAddingNew, handleCompletedTasks }) => {
+const TasksNav = ({
+  setAddingNew,
+  handleCompletedTasks,
+  handleClearCompleted,
+  handleClearAll,
+}) => {
+  const [showDropdown, setShowDropdown] = React.useState(false);
+
   const handleNewTask = () => {
     setAddingNew(true);
   };
-
   return (
     <>
       <div className="flex justify-between">
@@ -115,6 +140,23 @@ const TasksNav = ({ setAddingNew, handleCompletedTasks }) => {
           <button onClick={handleCompletedTasks}>
             <EyeIcon />
           </button>
+
+          <div
+            className="relative inline-flex"
+            onBlur={() => setShowDropdown(false)}
+          >
+            <button onClick={() => setShowDropdown(!showDropdown)}>
+              <TrashIcon />
+            </button>
+            {showDropdown && (
+              <div className="absolute bg-white z-10 w-44 top-full right-0 rounded shadow-lg text-left">
+                <button onMouseDown={handleClearCompleted}>
+                  Clear completed tasks
+                </button>
+                <button onMouseDown={handleClearAll}>Clear all tasks</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>

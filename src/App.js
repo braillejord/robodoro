@@ -101,7 +101,7 @@ export const App = () => {
       <Section>
         <TimerDetails stages={stages} currentStage={currentStage} />
         <Timer time={time} />
-        <div>Reward: Robot</div>
+        <div>End of Session Reward: Robot</div>
         <TimerButtons
           play={play}
           setPlay={setPlay}
